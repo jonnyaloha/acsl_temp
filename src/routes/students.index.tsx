@@ -96,9 +96,9 @@ function CurrentList({ list }: { list: Student[] }) {
               src={personPhoto(s.id)}
               alt={s.name.ko}
               loading="lazy"
-              width={56}
-              height={56}
-              className="w-14 h-14 rounded-full object-cover border border-border bg-muted shrink-0"
+              width={80}
+              height={80}
+              className="w-20 h-20 rounded-full object-cover border border-border bg-muted shrink-0"
               style={{ objectPosition: "center 0%" }}
             />
             <div className="min-w-0">
