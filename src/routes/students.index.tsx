@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useRouterState } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Mail } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -23,14 +23,31 @@ function advisorNameFor(id: string) {
   return professors.find((p) => p.id === id)?.name.ko ?? "";
 }
 
+function FilterChip({ active, onClick, children }: { active: boolean; onClick: () => void; children: ReactNode }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`px-3 py-1.5 rounded-full text-sm font-medium transition border ${
+        active
+          ? "bg-navy text-white border-navy"
+          : "bg-background text-muted-foreground border-border hover:text-foreground"
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
 function StudentsPage() {
   const { t } = useLanguage();
   const hash = useRouterState({ select: (s) => s.location.hash });
   const [tab, setTab] = useState<Degree>("phd_s");
+  const [advisor, setAdvisor] = useState<string>("all");
 
   useEffect(() => {
     if ((["phd_s", "ms_s", "ug", "alumni"] as const).includes(hash as Degree)) {
       setTab(hash as Degree);
+      setAdvisor("all");
     }
   }, [hash]);
 
@@ -41,11 +58,12 @@ function StudentsPage() {
     { key: "alumni", label: t("students.tab.alumni") },
   ];
 
-  const rawList = students.filter((s) => s.degree === tab);
+  const byDegree = students.filter((s) => s.degree === tab);
+  const filtered = advisor === "all" ? byDegree : byDegree.filter((s) => s.advisorId === advisor);
   const list =
     tab === "alumni"
-      ? rawList
-      : [...rawList].sort((a, b) =>
+      ? filtered
+      : [...filtered].sort((a, b) =>
           (a.enrollmentDate ?? "9999-99").localeCompare(b.enrollmentDate ?? "9999-99")
         );
 
@@ -53,11 +71,11 @@ function StudentsPage() {
     <>
       <PageHeader title={t("students.title")} subtitle={t("students.subtitle")} />
       <div className="mx-auto max-w-5xl px-6 lg:px-10 py-16">
-        <div className="flex flex-wrap gap-1 border-b border-border mb-8">
+        <div className="flex flex-wrap gap-1 border-b border-border mb-6">
           {tabs.map((tb) => (
             <button
               key={tb.key}
-              onClick={() => setTab(tb.key)}
+              onClick={() => { setTab(tb.key); setAdvisor("all"); }}
               className={`px-4 py-3 text-sm font-semibold border-b-2 -mb-px transition ${
                 tab === tb.key
                   ? "border-accent text-navy"
@@ -66,6 +84,17 @@ function StudentsPage() {
             >
               {tb.label}
             </button>
+          ))}
+        </div>
+
+        <div className="flex flex-wrap gap-2 mb-8">
+          <FilterChip active={advisor === "all"} onClick={() => setAdvisor("all")}>
+            ALL
+          </FilterChip>
+          {professors.map((p) => (
+            <FilterChip key={p.id} active={advisor === p.id} onClick={() => setAdvisor(p.id)}>
+              {p.name.ko}
+            </FilterChip>
           ))}
         </div>
 
