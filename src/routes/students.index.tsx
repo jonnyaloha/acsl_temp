@@ -84,10 +84,14 @@ function StudentsPage() {
 function CurrentList({ list }: { list: Student[] }) {
   const { t } = useLanguage();
   return (
-    <ul className="divide-y divide-border">
+    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       {list.map((s) => (
-        <li key={s.id} className="py-4 flex flex-wrap items-center justify-between gap-3">
-          <Link to="/students/$id" params={{ id: s.id }} className="flex items-center gap-4 min-w-0 group">
+        <li key={s.id}>
+          <Link
+            to="/students/$id"
+            params={{ id: s.id }}
+            className="flex items-center gap-4 p-4 rounded-xl border border-border bg-card hover:shadow-md hover:-translate-y-0.5 transition group"
+          >
             <img
               src={personPhoto(s.id)}
               alt={s.name.ko}
@@ -98,23 +102,24 @@ function CurrentList({ list }: { list: Student[] }) {
               style={{ objectPosition: "center 0%" }}
             />
             <div className="min-w-0">
-              <p className="font-semibold text-navy group-hover:text-accent transition">
+              <p className="font-semibold text-navy group-hover:text-accent transition truncate">
                 {s.name.ko}
                 <span className="ml-1.5 text-xs font-normal text-muted-foreground">{s.name.en}</span>
               </p>
-              <p className="text-xs text-foreground/60 mt-1">
+              <p className="text-xs text-foreground/60 mt-0.5 truncate">
                 {t("students.advisor")}: {advisorNameFor(s.advisorId)}
               </p>
+              {s.email && (
+                <a
+                  href={`mailto:${s.email}`}
+                  onClick={(e) => e.stopPropagation()}
+                  className="inline-flex items-center gap-1 text-xs text-accent hover:underline mt-0.5"
+                >
+                  <Mail size={11} /> {s.email}
+                </a>
+              )}
             </div>
           </Link>
-          {s.email && (
-            <a
-              href={`mailto:${s.email}`}
-              className="inline-flex items-center gap-1.5 text-xs text-accent hover:underline"
-            >
-              <Mail size={12} /> {s.email}
-            </a>
-          )}
         </li>
       ))}
     </ul>
