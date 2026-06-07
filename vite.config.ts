@@ -15,4 +15,14 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  vite: {
+    build: {
+      rollupOptions: {
+        output: {
+          // Use hash-only filenames to avoid non-ASCII characters in URLs
+          assetFileNames: "assets/[hash][extname]",
+        },
+      },
+    },
+  },
 });
