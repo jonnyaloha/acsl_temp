@@ -93,6 +93,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "ACSL — Aerospace Control Systems Laboratory" },
       { property: "og:description", content: "Aerospace Control Systems Laboratory — research in aerospace systems, guidance & control, modeling & simulation, and air traffic management." },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "https://acsl-temp.pages.dev/images/logo.png" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
     ],
